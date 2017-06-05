@@ -1,15 +1,20 @@
 <?php
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use PHPUnit\Framework\Assert;
+use Sil\JsonLog\JsonLogHelper;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
+    private $logMessageData = [];
+    private $prefix = null;
+    private $result = null;
+    
     /**
      * Initializes context.
      *
@@ -26,15 +31,21 @@ class FeatureContext implements Context
      */
     public function iHaveTheFollowingLogMessageData(TableNode $table)
     {
-        throw new PendingException();
+        foreach ($table as $row) {
+            // See `\yii\log\Logger::messages` for order.
+            $this->logMessageData[0] = $row['message'];
+            $this->logMessageData[1] = $row['level'];
+            $this->logMessageData[2] = $row['category'];
+            break;
+        }
     }
 
     /**
-     * @Given I provide a prefix of :arg1
+     * @Given I provide a prefix of :prefix
      */
-    public function iProvideAPrefixOf($arg1)
+    public function iProvideAPrefixOf($prefix)
     {
-        throw new PendingException();
+        $this->prefix = $prefix;
     }
 
     /**
@@ -42,7 +53,10 @@ class FeatureContext implements Context
      */
     public function iCallTheStaticHelperFunctionToFormatThatAsJson()
     {
-        throw new PendingException();
+        $this->result = JsonLogHelper::formatAsJson(
+            $this->logMessageData,
+            $this->prefix
+        );
     }
 
     /**
@@ -50,15 +64,22 @@ class FeatureContext implements Context
      */
     public function theResultShouldBeAJsonString()
     {
-        throw new PendingException();
+        Assert::assertJson($this->result);
     }
 
     /**
-     * @Then the result should have a :arg1 of :arg2
+     * @Then the result should have a(n) :attribute of :expectedValue
      */
-    public function theResultShouldHaveAOf($arg1, $arg2)
+    public function theResultShouldHaveAOf($attribute, $expectedValue)
     {
-        throw new PendingException();
+        $resultData = \json_decode($this->result, true);
+        Assert::assertArrayHasKey($attribute, $resultData);
+        Assert::assertSame($expectedValue, $resultData[$attribute], sprintf(
+            'Expected %s to have a value of %s, not %s.',
+            $attribute,
+            var_export($expectedValue, true),
+            var_export($resultData[$attribute], true)
+        ));
     }
 
     /**
@@ -66,23 +87,19 @@ class FeatureContext implements Context
      */
     public function iFormatThatMessageAndPrefixAsJson()
     {
-        throw new PendingException();
+        $jsonLogHelper = new JsonLogHelper();
+        $this->result = $jsonLogHelper->formatMessageAndPrefix(
+            $this->logMessageData,
+            $this->prefix
+        );
     }
 
     /**
      * @Given I provide the following prefix:
      */
-    public function iProvideTheFollowingPrefix(PyStringNode $string)
+    public function iProvideTheFollowingPrefix(PyStringNode $pyStringNode)
     {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then the result should have a :arg1 with an :arg2 of :arg3
-     */
-    public function theResultShouldHaveAWithAnOf($arg1, $arg2, $arg3)
-    {
-        throw new PendingException();
+        $this->prefix = (string)$pyStringNode;
     }
 
     /**
@@ -90,14 +107,15 @@ class FeatureContext implements Context
      */
     public function iDoNotProvideAPrefix()
     {
-        throw new PendingException();
+        $this->prefix = null;
     }
 
     /**
-     * @Then the result should not have a :arg1
+     * @Then the result should not have a(n) :attribute
      */
-    public function theResultShouldNotHaveA($arg1)
+    public function theResultShouldNotHaveA($attribute)
     {
-        throw new PendingException();
+        $resultData = \json_decode($this->result, true);
+        Assert::assertArrayNotHasKey($attribute, $resultData);
     }
 }
