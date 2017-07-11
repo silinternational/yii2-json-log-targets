@@ -1,7 +1,7 @@
 <?php
 namespace Sil\JsonLog\target;
 
-use Sil\JsonFileLog\JsonLogHelper;
+use Sil\JsonLog\JsonLogHelper;
 use yii\log\FileTarget;
 
 class JsonFileTarget extends FileTarget
