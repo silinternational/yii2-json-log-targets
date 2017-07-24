@@ -6,4 +6,7 @@ behatappend:
 	bash -c "./vendor/bin/behat --append-snippets"
 
 composer:
-	bash -c "composer update --no-scripts --ignore-platform-reqs"
+	docker-compose run --rm php bash -c "composer install --no-scripts --no-plugins"
+
+composerupdate:
+	docker-compose run --rm php bash -c "composer update --no-scripts"
