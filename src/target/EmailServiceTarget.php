@@ -92,15 +92,17 @@ class EmailServiceTarget extends Target
             ]
         );
 
-        $body = $this->formatMessage($this->messages);
+        foreach ($this->messages as $msg) {
+            $body = $this->formatMessage($msg);
 
-        $emailService->email([
-            'to_address' => $this->message['to'],
-            'cc_address' => $this->message['cc'],
-            'bcc_address' => $this->message['bcc'],
-            'subject' => $this->message['subject'],
-            'text_body' => $body,
-            'html_body' => $body,
-        ]);
+            $emailService->email([
+                'to_address' => $this->message['to'],
+                'cc_address' => $this->message['cc'],
+                'bcc_address' => $this->message['bcc'],
+                'subject' => $this->message['subject'],
+                'text_body' => $body,
+                'html_body' => $body,
+            ]);
+        }
     }
 }
