@@ -83,26 +83,31 @@ class EmailServiceTarget extends Target
      */
     public function export()
     {
-        $emailService = new EmailServiceClient(
-            $this->baseUrl,
-            $this->accessToken,
-            [
-                EmailServiceClient::ASSERT_VALID_IP_CONFIG => $this->assertValidIp,
-                EmailServiceClient::TRUSTED_IPS_CONFIG => $this->validIpRanges,
-            ]
-        );
+        try {
+            $emailService = new EmailServiceClient(
+                $this->baseUrl,
+                $this->accessToken,
+                [
+                    EmailServiceClient::ASSERT_VALID_IP_CONFIG => $this->assertValidIp,
+                    EmailServiceClient::TRUSTED_IPS_CONFIG => $this->validIpRanges,
+                ]
+            );
 
-        foreach ($this->messages as $msg) {
-            $body = $this->formatMessage($msg);
+            foreach ($this->messages as $msg) {
+                $body = $this->formatMessage($msg);
 
-            $emailService->email([
-                'to_address' => $this->message['to'],
-                'cc_address' => $this->message['cc'],
-                'bcc_address' => $this->message['bcc'],
-                'subject' => $this->message['subject'],
-                'text_body' => $body,
-                'html_body' => $body,
-            ]);
+                $emailService->email([
+                    'to_address' => $this->message['to'],
+                    'cc_address' => $this->message['cc'],
+                    'bcc_address' => $this->message['bcc'],
+                    'subject' => $this->message['subject'],
+                    'text_body' => $body,
+                    'html_body' => $body,
+                ]);
+            }
+        } catch (\Exception $e) {
+            // squash exception? let it be thrown? not sure what is best here. 
         }
+
     }
 }
