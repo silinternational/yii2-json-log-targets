@@ -50,18 +50,16 @@ class EmailServiceTarget extends Target
         }
         if ($this->assertValidIp && empty($this->validIpRanges)) {
             throw new InvalidConfigException(
-                'EmailServiceTarget::validIpRanges must be set when EmailServicetarget::assertValidIp is true.'
+                'EmailServiceTarget::validIpRanges must be set when EmailServiceTarget::assertValidIp is true.'
             );
         }
         if (empty($this->message['to'])) {
             throw new InvalidConfigException('The "to" option must be set for EmailServiceTarget::message.');
         }
-        if (empty($this->message['subject'])) {
-            $this->message['subject'] = 'System Alert from Sil\JsonLog\target\EmailServiceTarget';
-        }
 
-        $this->message['cc'] = isset($this->message['cc']) ? $this->message['cc'] : '';
-        $this->message['bcc'] = isset($this->message['bcc']) ? $this->message['bcc'] : '';
+        $this->message['subject'] = $this->message['subject'] ?? 'System Alert from EmailService';
+        $this->message['cc'] = $this->message['cc'] ?? '';
+        $this->message['bcc'] = $this->message['bcc'] ?? '';
     }
 
 
