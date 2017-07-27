@@ -127,6 +127,10 @@ build_failure_conditions:
     - 'project.metric("scrutinizer.quality", < 6)'
 
 build:
+    environment:
+        php:
+            ini:
+                'variables_order': 'EGPCS'
     dependencies:
         before:
             - composer global require "fxp/composer-asset-plugin:^1.3.1"
