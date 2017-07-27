@@ -106,7 +106,10 @@ class EmailServiceTarget extends Target
                 ]);
             }
         } catch (\Exception $e) {
-            // squash exception? let it be thrown? not sure what is best here. 
+            // Log to syslog
+            openlog('application', LOG_NDELAY | LOG_PERROR, LOG_USER);
+            syslog(LOG_CRIT, $e->getMessage());
+            closelog();
         }
 
     }
