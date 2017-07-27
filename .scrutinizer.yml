@@ -141,10 +141,6 @@ build:
             -
                 command: ./vendor/bin/behat --strict
     nodes:
-        php56:
-            environment:
-                php: 5.6
-
         php70:
             environment:
                 php: 7.0
