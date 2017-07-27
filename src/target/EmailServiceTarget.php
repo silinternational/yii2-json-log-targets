@@ -44,11 +44,13 @@ class EmailServiceTarget extends Target
             throw new InvalidConfigException('The "baseUrl" option must be set for EmailServiceTarget::baseUrl.');
         }
         if (empty($this->accessToken)) {
-            throw new InvalidConfigException('The "accessToken" option must be set for EmailServiceTarget::accessToken.');
+            throw new InvalidConfigException(
+                'The "accessToken" option must be set for EmailServiceTarget::accessToken.'
+            );
         }
         if ($this->assertValidIp && empty($this->validIpRanges)) {
             throw new InvalidConfigException(
-                'The "validIpRanges" option must be set for EmailServiceTarget::validIpRanges when EmailServicetarget::assertValidIp is true.'
+                'EmailServiceTarget::validIpRanges must be set when EmailServicetarget::assertValidIp is true.'
             );
         }
         if (empty($this->message['to'])) {
