@@ -24,7 +24,7 @@ As part of a Yii2 app configuration:
                 'baseUrl' => 'https://emailservice.mydomain.com',
                 'accessToken' => 'asdf1234',
                 'assertValidIp' => true,
-                'validIpRanges' => ['10.0.10.0/24','127.0.0.1']
+                'validIpRanges' => ['10.0.10.0/24','127.0.0.1'],
                 'enabled' => true,
             ],
         ],
