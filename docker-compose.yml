@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+
+  php:
+    image: silintl/php7
+    volumes:
+      - ./:/data
+    working_dir: /data
+    env_file:
+      - ./local.env
