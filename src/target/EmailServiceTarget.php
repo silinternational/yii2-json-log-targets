@@ -83,34 +83,26 @@ class EmailServiceTarget extends Target
      */
     public function export()
     {
-        try {
-            $emailService = new EmailServiceClient(
-                $this->baseUrl,
-                $this->accessToken,
-                [
-                    EmailServiceClient::ASSERT_VALID_IP_CONFIG => $this->assertValidIp,
-                    EmailServiceClient::TRUSTED_IPS_CONFIG => $this->validIpRanges,
-                ]
-            );
+        $emailService = new EmailServiceClient(
+            $this->baseUrl,
+            $this->accessToken,
+            [
+                EmailServiceClient::ASSERT_VALID_IP_CONFIG => $this->assertValidIp,
+                EmailServiceClient::TRUSTED_IPS_CONFIG => $this->validIpRanges,
+            ]
+        );
 
-            foreach ($this->messages as $msg) {
-                $body = $this->formatMessage($msg);
+        foreach ($this->messages as $msg) {
+            $body = $this->formatMessage($msg);
 
-                $emailService->email([
-                    'to_address' => $this->message['to'],
-                    'cc_address' => $this->message['cc'],
-                    'bcc_address' => $this->message['bcc'],
-                    'subject' => $this->message['subject'],
-                    'text_body' => $body,
-                    'html_body' => $body,
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Log to syslog
-            openlog('application', LOG_NDELAY | LOG_PERROR, LOG_USER);
-            syslog(LOG_CRIT, $e->getMessage());
-            closelog();
+            $emailService->email([
+                'to_address' => $this->message['to'],
+                'cc_address' => $this->message['cc'],
+                'bcc_address' => $this->message['bcc'],
+                'subject' => $this->message['subject'],
+                'text_body' => $body,
+                'html_body' => $body,
+            ]);
         }
-
     }
 }
