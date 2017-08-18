@@ -93,7 +93,7 @@ class EmailServiceTarget extends Target
         );
 
         foreach ($this->messages as $msg) {
-            $body = sprintf("<pre>%s</pre>", $this->formatMessage($msg));
+            $body = $this->formatMessage($msg);
 
             $emailService->email([
                 'to_address' => $this->message['to'],
@@ -101,7 +101,7 @@ class EmailServiceTarget extends Target
                 'bcc_address' => $this->message['bcc'],
                 'subject' => $this->message['subject'],
                 'text_body' => $body,
-                'html_body' => $body,
+                'html_body' => sprintf("<pre>%s</pre>", $body),
             ]);
         }
     }
