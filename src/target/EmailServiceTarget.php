@@ -4,6 +4,7 @@ namespace Sil\JsonLog\target;
 use Sil\EmailService\Client\EmailServiceClient;
 use Sil\JsonLog\JsonLogHelper;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 use yii\log\Target;
 
 class EmailServiceTarget extends Target
@@ -72,10 +73,12 @@ class EmailServiceTarget extends Target
      */
     public function formatMessage($logMessageData)
     {
-        return JsonLogHelper::formatAsJson(
+        $jsonString = JsonLogHelper::formatAsJson(
             $logMessageData,
             $this->getMessagePrefix($logMessageData)
         );
+
+        return Json::encode(Json::decode($jsonString), JSON_PRETTY_PRINT);
     }
 
     /**
