@@ -123,7 +123,7 @@ class JsonLogHelper
         $logData['message'] = $this->extractMessageContentData($messageContent);
         
         // Format the data as a JSON string and return it.
-        return Json::encode($logData, JSON_PRETTY_PRINT);
+        return Json::encode($logData);
     }
     
     /**
