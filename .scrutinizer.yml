@@ -129,7 +129,7 @@ build_failure_conditions:
 build:
     environment:
         php:
-            version: 7.0.20
+            version: 7.2.28
             ini:
                 'variables_order': 'EGPCS'
     dependencies:
