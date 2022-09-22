@@ -3,7 +3,7 @@ version: "2"
 services:
 
   php:
-    image: silintl/php7
+    image: silintl/php8:8.1
     volumes:
       - ./:/data
     working_dir: /data

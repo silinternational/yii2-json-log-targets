@@ -129,7 +129,7 @@ class JsonLogHelper
     /**
      * Determine whether the given value is a string that parses as valid JSON.
      * 
-     * @param string $string The value to check.
+     * @param mixed $string The value to check.
      * @return boolean
      */
     protected function isJsonString($string)
