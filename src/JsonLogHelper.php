@@ -1,4 +1,5 @@
 <?php
+
 namespace Sil\JsonLog;
 
 use yii\helpers\Json;
@@ -17,12 +18,12 @@ class JsonLogHelper
     protected function extractMessageContentData($messageContent)
     {
         $result = null;
-        
+
         if ($messageContent instanceof \Exception) {
-            
+
             // Handle log messages that are exceptions a little more
             // intelligently.
-            // 
+            //
             // NOTE: In our limited testing, this is never used. Apparently
             //       something is converting the exceptions to strings despite
             //       the statement at
@@ -33,48 +34,44 @@ class JsonLogHelper
                 'code' => $messageContent->getCode(),
                 'exception' => $messageContent->getMessage(),
             );
-            
+
             if ($messageContent instanceof \yii\web\HttpException) {
                 $result['statusCode'] = $messageContent->statusCode;
             }
         } elseif ($this->isMultilineString($messageContent)) {
-            
+
             // Split multiline strings (such as a stack trace) into an array
             // for easier reading in the log.
             $result = explode("\n", $messageContent);
-            
         } else {
-            
+
             // Use anything else as-is.
             $result = $messageContent;
         }
-        
+
         return $result;
     }
-    
+
     /**
      * If the given prefix is a JSON string with key-value data, extract it as
      * an associative array. Otherwise return null.
-     * 
+     *
      * @param mixed $prefix The raw prefix string.
      * @return null|array
      */
     protected function extractPrefixKeyValueData($prefix)
     {
         $result = null;
-        
-        if ($this->isJsonString($prefix)) {
-            
-            // If it has key-value data, as evidenced by the raw prefix string
-            // being a JSON object (not JSON array), use it.
-            if (substr($prefix, 0, 1) === '{') {
-                $result = Json::decode($prefix);
-            }
+
+        // If it has key-value data, as evidenced by the raw prefix string
+        // being a JSON object (not JSON array), use it.
+        if ($this->isJsonString($prefix) && substr($prefix, 0, 1) === '{') {
+            $result = Json::decode($prefix);
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Static helper function for JsonLogHelper->formatMessageAndPrefix(...).
      *
@@ -88,7 +85,7 @@ class JsonLogHelper
         $jsonLogHelper = new JsonLogHelper();
         return $jsonLogHelper->formatMessageAndPrefix($logMessageData, $prefix);
     }
-    
+
     /**
      * Format a log message as a string of JSON.
      *
@@ -108,7 +105,7 @@ class JsonLogHelper
         // If the prefix is already a JSON string, decode it (to avoid
         // double-encoding it below).
         $prefixData = $this->extractPrefixKeyValueData($prefix);
-        
+
         // Only include the prefix data and/or raw prefix if there was content.
         if ($prefixData) {
             foreach ($prefixData as $key => $value) {
@@ -117,52 +114,52 @@ class JsonLogHelper
         } elseif ($prefix) {
             $logData['prefix'] = $prefix;
         }
-        
+
         $logData['level'] = Logger::getLevelName($level);
         $logData['category'] = $category;
         $logData['message'] = $this->extractMessageContentData($messageContent);
-        
+
         // Format the data as a JSON string and return it.
         return Json::encode($logData);
     }
-    
+
     /**
      * Determine whether the given value is a string that parses as valid JSON.
-     * 
+     *
      * @param mixed $string The value to check.
      * @return boolean
      */
     protected function isJsonString($string)
     {
-        if ( ! is_string($string)) {
+        if (! is_string($string)) {
             return false;
         }
-        
+
         $firstChar = substr($string, 0, 1);
-        
+
         // If it starts the way a JSON object or array would, and parsing it as
         // JSON returns no errors, consider it a JSON string.
         if (($firstChar === '{') || ($firstChar === '[')) {
             json_decode($string);
-            return (json_last_error() == JSON_ERROR_NONE);
+            return json_last_error() == JSON_ERROR_NONE;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Determine whether the given data is a string that contains at least one
      * line feed character ("\n").
-     * 
+     *
      * @param mixed $data The data to check.
      * @return boolean
      */
     protected function isMultilineString($data)
     {
-        if ( ! is_string($data)) {
+        if (! is_string($data)) {
             return false;
         } else {
-            return (strpos($data, "\n") !== false);
+            return strpos($data, "\n") !== false;
         }
     }
 }

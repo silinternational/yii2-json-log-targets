@@ -1,0 +1,16 @@
+name: Unit Tests
+
+on:
+  push:
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run unit tests
+        run: |
+          touch local.env
+          make composer test
